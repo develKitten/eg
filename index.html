@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐧 임베디드기사 리눅스 마스터 🎯</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        .header {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 12px;
+            color: #2c3e50;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-width: 80px;
+        }
+        
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+        
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .mode-btn {
+            padding: 10px 16px;
+            background: white;
+            color: #495057;
+            border: 2px solid #dee2e6;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .mode-btn:hover {
+            background: #f8f9fa;
+            border-color: #495057;
+        }
+        
+        .mode-btn.active {
+            background: #495057;
+            color: white;
+            border-color: #495057;
+        }
+        
+        .controls-section {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .category-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .category-select {
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            background: white;
+            color: #495057;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 150px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .mobile-swipe-hint {
+            display: none;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px dashed #dee2e6;
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+        
+        .btn-primary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #495057;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .study-area {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            width: min(400px, 90vw);
+            height: 220px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .card-front {
+            background: white;
+            color: #333;
+            border: 1px solid #e9ecef;
+        }
+        
+        .card-back {
+            background: #f8f9fa;
+            transform: rotateY(180deg);
+            color: #333;
+            border: 1px solid #e9ecef;
+        }
+        
+        .card-content h2 {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .card-content p {
+            font-size: 1em;
+            line-height: 1.4;
+            color: #34495e;
+        }
+        
+        .card-content .category {
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+            display: inline-block;
+            color: #495057;
+        }
+        
+        .quiz-area {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .progress {
+            background: #e9ecef;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            background: #28a745;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .question {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+        
+        .options {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+            text-align: left;
+        }
+        
+        .option:hover {
+            background: #f8f9fa;
+            border-color: #6c757d;
+        }
+        
+        .option.selected {
+            background: #6c757d;
+            color: white;
+            border-color: #6c757d;
+        }
+        
+        .option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+        
+        .option.wrong {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+        
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .quiz-progress {
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .signal-game {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .signal-display {
+            font-size: 2em;
+            padding: 30px;
+            background: #495057;
+            color: white;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .number-input {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .number-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .number-btn:hover {
+            background: #f8f9fa;
+            border-color: #6c757d;
+        }
+        
+        .number-btn.selected {
+            background: #6c757d;
+            color: white;
+            border-color: #6c757d;
+        }
+        
+        .signal-result {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        
+        .result-correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .result-wrong {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #6c757d;
+            margin-top: 30px;
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .stats {
+                gap: 8px;
+            }
+            
+            .stat-card {
+                padding: 8px 12px;
+                min-width: 70px;
+            }
+            
+            .stat-number {
+                font-size: 1.3em;
+            }
+            
+            .card {
+                height: 200px;
+            }
+            
+            .card-content h2 {
+                font-size: 1.3em;
+            }
+            
+            .card-content p {
+                font-size: 0.9em;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            
+            .quiz-controls {
+                justify-content: center;
+                text-align: center;
+            }
+            
+            .number-input {
+                justify-content: center;
+            }
+            
+            .number-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .mode-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 80%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>임베디드기사 리눅스 마스터</h1>
+            <p>리눅스 함수와 시그널을 재미있게 학습하세요!</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <span class="stat-number" id="totalCards">48</span>
+                <span class="stat-label">총 카드</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="studiedCards">0</span>
+                <span class="stat-label">학습완료</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="correctRate">0%</span>
+                <span class="stat-label">정답률</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="signalScore">0</span>
+                <span class="stat-label">시그널점수</span>
+            </div>
+        </div>
+        
+        <div class="mode-selector">
+            <div class="mode-btn active" onclick="switchMode('study')">카드학습</div>
+            <div class="mode-btn" onclick="switchMode('quiz')">기출퀴즈</div>
+            <div class="mode-btn" onclick="switchMode('signal')">시그널번호</div>
+        </div>
+        
+        <div class="controls-section">
+            <div class="category-row">
+                <label style="color: #495057; font-weight: bold;">카테고리:</label>
+                <select class="category-select" onchange="filterCategory(this.value)">
+                    <option value="all">전체</option>
+                    <option value="memory">메모리 관리</option>
+                    <option value="process">프로세스/스레드</option>
+                    <option value="driver">디바이스 드라이버</option>
+                    <option value="module">커널 모듈</option>
+                    <option value="io">파일/I/O</option>
+                    <option value="ipc">공유 메모리</option>
+                    <option value="signal">시그널</option>
+                </select>
+            </div>
+            <div class="controls">
+                <button class="btn btn-primary" onclick="previousCard()">이전</button>
+                <button class="btn btn-secondary" onclick="shuffleCards()">셔플</button>
+                <button class="btn btn-success" onclick="nextCard()">다음</button>
+            </div>
+            <div class="mobile-swipe-hint" id="cardSwipeHint">
+                카드를 좌우로 스와이프하여 이동할 수 있습니다
+            </div>
+        </div>
+        
+        <div id="studyMode" class="study-area">
+            <div class="card" onclick="flipCard()">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="card-content">
+                            <div class="category" id="cardCategory">메모리 관리</div>
+                            <h2 id="cardTitle">kmalloc()</h2>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-content">
+                            <p id="cardDescription">물리적으로 연속된 메모리를 할당하는 함수. DMA 전송이 가능하며, 크기 제한이 있음.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="quizMode" class="quiz-area">
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="question" id="quizQuestion">문제를 불러오는 중...</div>
+            <div class="options" id="quizOptions"></div>
+            <div class="quiz-controls">
+                <button class="btn btn-secondary" onclick="previousQuiz()">이전</button>
+                <span class="quiz-progress" id="quizProgress">1 / 20</span>
+                <button class="btn btn-primary" onclick="nextQuiz()">다음</button>
+            </div>
+            <div class="mobile-swipe-hint" id="quizSwipeHint">
+                퀴즈를 좌우로 스와이프하여 이동할 수 있습니다
+            </div>
+        </div>
+        
+        <div id="signalMode" class="signal-game">
+            <h2 style="color: #495057; margin-bottom: 20px;">시그널 번호 맞추기</h2>
+            <div class="signal-display" id="signalDisplay">SIGINT</div>
+            <p style="margin: 10px 0; color: #666;">위 시그널의 번호를 선택하세요!</p>
+            <div class="number-input" id="numberInput"></div>
+            <div class="signal-result" id="signalResult" style="display: none;"></div>
+            <div style="margin-top: 20px;">
+                <button class="btn btn-success" onclick="nextSignal()">다음 시그널</button>
+                <button class="btn btn-secondary" onclick="toggleSignalMode()">모드변경</button>
+            </div>
+            <div class="mobile-swipe-hint" id="signalSwipeHint">
+                시그널을 좌우로 스와이프하여 이동할 수 있습니다
+            </div>
+            <div style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                <span>연속 정답: <strong id="streakCount">0</strong></span> |
+                <span>총 점수: <strong id="totalSignalScore">0</strong></span>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button class="btn btn-secondary" onclick="markFavorite()">즐겨찾기</button>
+            <button class="btn btn-success" onclick="resetProgress()">진행률리셋</button>
+        </div>
+        
+        <div class="footer">
+            <p>카드 클릭으로 뒤집기 | 키보드: ←→ 이동, 스페이스 뒤집기 | 화이팅!</p>
+        </div>
+    </div>
+
+    <script>
+        // 기존 학습 데이터
+        const studyData = [
+            // 메모리 관리
+            { category: 'memory', title: 'kmalloc()', description: '물리적으로 연속된 메모리를 할당하는 함수. DMA 전송이 가능하며, 크기 제한이 있음.' },
+            { category: 'memory', title: 'kfree()', description: 'kmalloc()으로 할당된 메모리를 해제하는 함수.' },
+            { category: 'memory', title: 'vmalloc()', description: '가상적으로 연속된 메모리를 할당하는 함수. 큰 메모리 할당 가능하지만 DMA 불가.' },
+            { category: 'memory', title: 'calloc()', description: 'NULL로 초기화된 힙 메모리를 할당하는 함수.' },
+            { category: 'memory', title: 'mlock()', description: '메모리를 락하여 페이징을 금지하는 함수. 실시간/보안 중요 메모리에 사용.' },
+            { category: 'memory', title: 'mmap()', description: '메모리 맵 파일을 생성하고 공유메모리 통신에 사용되는 함수.' },
+            { category: 'memory', title: 'ioremap()', description: '물리 주소를 커널의 가상 주소 공간으로 매핑하는 함수.' },
+            
+            // 프로세스/스레드
+            { category: 'process', title: 'fork()', description: '현재 프로세스를 복제하여 새로운 프로세스를 생성하는 함수.' },
+            { category: 'process', title: 'waitpid()', description: '좀비 프로세스를 제거하기 위해 자식 프로세스 종료를 대기하는 함수.' },
+            { category: 'process', title: 'signal()', description: '시그널 핸들러를 등록하거나 시그널 처리 방식을 설정하는 함수.' },
+            { category: 'process', title: 'sigprocmask()', description: '시그널을 봉쇄(블록)하거나 해제하는 함수.' },
+            { category: 'process', title: 'pthread_create()', description: '새로운 스레드를 생성하는 함수.' },
+            { category: 'process', title: 'pthread_join()', description: '스레드를 프로세스에 병합하고 종료를 대기하는 함수.' },
+            { category: 'process', title: 'pthread_detach()', description: '스레드를 분리하여 자동으로 자원을 해제하게 하는 함수.' },
+            { category: 'process', title: 'pthread_cancel()', description: '스레드를 취소(종료)하는 함수.' },
+            { category: 'process', title: 'pthread_mutex_lock()', description: '뮤텍스를 잠그는 함수.' },
+            
+            // 디바이스 드라이버
+            { category: 'driver', title: 'register_chrdev()', description: '문자 디바이스 드라이버를 커널에 등록하는 함수.' },
+            { category: 'driver', title: 'unregister_chrdev()', description: '문자 디바이스 드라이버를 커널에서 해제하는 함수.' },
+            { category: 'driver', title: 'module_init()', description: '커널 모듈 초기화 함수를 지정하는 매크로.' },
+            { category: 'driver', title: 'module_exit()', description: '커널 모듈 해제 함수를 지정하는 매크로.' },
+            { category: 'driver', title: 'init_timer()', description: '커널 타이머를 초기화하는 함수.' },
+            { category: 'driver', title: 'add_timer()', description: '커널 타이머를 활성화하는 함수.' },
+            { category: 'driver', title: 'del_timer()', description: '커널 타이머를 제거하는 함수.' },
+            { category: 'driver', title: 'request_region()', description: 'I/O 영역을 등록하여 배타적 사용권을 획득하는 함수.' },
+            { category: 'driver', title: 'file_operations', description: '시스템 콜과 디바이스 드라이버 함수를 매핑하는 구조체.' },
+            { category: 'driver', title: 'wake_up()', description: '블로킹된 프로세스들을 깨우는 함수.' },
+            { category: 'driver', title: 'kill_proc()', description: '프로세스에게 시그널을 보내는 함수.' },
+            { category: 'driver', title: 'put_user()', description: '커널 공간에서 사용자 공간으로 데이터를 복사하는 함수.' },
+            { category: 'driver', title: 'get_user()', description: '사용자 공간에서 커널 공간으로 데이터를 복사하는 함수.' },
+            
+            // 커널 모듈
+            { category: 'module', title: 'insmod', description: '커널 모듈을 이미 동작 중인 커널에 적재하는 명령어.' },
+            { category: 'module', title: 'rmmod', description: '커널에서 모듈을 제거하는 명령어.' },
+            { category: 'module', title: 'lsmod', description: '현재 적재된 커널 모듈 목록을 확인하는 명령어.' },
+            { category: 'module', title: 'mknod', description: '디바이스 파일을 생성하는 명령어.' },
+            { category: 'module', title: 'make modules', description: '커널에서 사용할 모듈들을 빌드하는 명령어.' },
+            
+            // 파일/I/O
+            { category: 'io', title: 'epoll()', description: '리눅스 2.6부터 지원되는 고성능 I/O 멀티플렉싱 함수.' },
+            { category: 'io', title: 'select()', description: '입출력 다중화 문제를 해결하기 위한 함수.' },
+            { category: 'io', title: 'posix_fadvise()', description: '미리 읽기 기능을 사용하여 레이턴시를 감소시키는 함수.' },
+            { category: 'io', title: 'stat()', description: '파일에 대한 정보를 확인하는 함수.' },
+            
+            // 공유 메모리
+            { category: 'ipc', title: 'shmget()', description: 'SysV 공유 메모리를 생성하고 새로운 IPC ID를 반환하는 함수.' },
+            { category: 'ipc', title: 'shmctl()', description: 'SysV 공유 메모리를 제어하는 함수.' },
+            { category: 'ipc', title: 'shmat()', description: 'SysV 공유 메모리를 프로세스 주소 공간에 부착하는 함수.' },
+            { category: 'ipc', title: 'shmdt()', description: 'SysV 공유 메모리를 프로세스 주소 공간에서 분리하는 함수.' },
+            { category: 'ipc', title: 'shm_open()', description: 'POSIX 공유 메모리를 생성하거나 오픈하는 함수.' },
+            { category: 'ipc', title: 'msgsnd()', description: '메시지 큐로 메시지를 전송하는 함수.' },
+            
+            // 시그널들
+            { category: 'signal', title: 'SIGINT (2번)', description: 'Ctrl+C 키보드 인터럽트 시그널. 가장 자주 출제됨.' },
+            { category: 'signal', title: 'SIGQUIT (3번)', description: 'Ctrl+\\ 키보드 종료 시그널.' },
+            { category: 'signal', title: 'SIGTSTP (20번)', description: 'Ctrl+Z 키보드 일시정지 시그널.' },
+            { category: 'signal', title: 'SIGHUP (1번)', description: '터미널 연결 끊김(행업) 시그널.' },
+            { category: 'signal', title: 'SIGTERM (15번)', description: '정상 종료 요청 시그널. kill 명령의 기본값.' },
+            { category: 'signal', title: 'SIGCHLD (17번)', description: '자식 프로세스 상태 변화 알림 시그널.' },
+            { category: 'signal', title: 'SIGKILL (9번)', description: '강제 종료 시그널. 블록 불가능.' },
+            { category: 'signal', title: 'SIGSTOP (19번)', description: '프로세스 정지 시그널. 블록 불가능.' },
+            { category: 'signal', title: 'SIGPIPE (13번)', description: '연결 종료된 소켓에 send 시도시 발생하는 시그널.' },
+            { category: 'signal', title: 'SIGUSR1 (10번)', description: '사용자 정의 시그널 1.' },
+            { category: 'signal', title: 'SIGUSR2 (12번)', description: '사용자 정의 시그널 2.' },
+            { category: 'signal', title: 'SIGFPE (8번)', description: '부동소수점 예외 시그널.' },
+            { category: 'signal', title: 'SIGSEGV (11번)', description: '세그멘테이션 위반 시그널.' },
+            { category: 'signal', title: 'SIGBUS (7번)', description: '버스 에러 시그널.' }
+        ];
+        
+        // 확장된 실제 기출문제들
+        const quizData = [
+            // 시그널 관련 기출문제들
+            {
+                question: "리눅스에서 프로그램 실행 중 사용자가 키보드에서 <Ctrl-C>를 누르더라도 중단되지 않도록 처리하는 방법으로 옳은 것은?",
+                options: ["signal(SIGFPE, SIG_DFL)", "signal(SIGINT, SIG_IGN)", "signal(SIGQUIT, SIG_DFL)", "signal(SIGUSR1, SIG_IGN)"],
+                correct: 1,
+                explanation: "signal(SIGINT, SIG_IGN)로 SIGINT 시그널을 무시하도록 설정하면 Ctrl+C를 눌러도 프로그램이 중단되지 않습니다."
+            },
+            {
+                question: "소켓 통신 중에 SIGPIPE 시그널이 발생했다면 어떤 오류가 발생한 경우인가?",
+                options: ["소켓 타임 아웃이 발생했다.", "연결이 종료된 소켓에 send를 시도했다.", "소켓의 수신 버퍼에 할당된 공간이 없다.", "클라이언트측의 connect 함수가 성공했다."],
+                correct: 1,
+                explanation: "SIGPIPE 시그널은 연결이 이미 종료된 소켓에 데이터를 전송하려고 할 때 발생합니다."
+            },
+            {
+                question: "자식 프로세스가 좀비상태가 되었다. 이를 제거하려면 부모 프로세스는 어떤 함수를 사용해야 하는가?",
+                options: ["unlink", "fcntl", "waitpid", "system"],
+                correct: 2,
+                explanation: "waitpid() 함수를 사용하여 자식 프로세스의 종료를 대기하고 좀비 프로세스를 제거할 수 있습니다."
+            },
+            {
+                question: "SIGINT 시그널의 번호는?",
+                options: ["1번", "2번", "3번", "9번"],
+                correct: 1,
+                explanation: "SIGINT는 2번 시그널로, Ctrl+C 키보드 인터럽트를 나타냅니다."
+            },
+            
+            // 함수 관련 기출문제들
+            {
+                question: "printf() 함수의 데이터 표현 중 변수의 주소(포인터 값)을 출력할 수 있는 형식은?",
+                options: ["%p", "%d", "%u", "%c"],
+                correct: 0,
+                explanation: "%p는 포인터 값(주소)을 16진수 형태로 출력하는 형식 지정자입니다."
+            },
+            {
+                question: "디바이스 드라이버에서 커널 타이머 사용 시 관계없는 함수는?",
+                options: ["init_timer()", "add_timer()", "del_timer()", "create_timer()"],
+                correct: 3,
+                explanation: "create_timer()는 존재하지 않는 함수입니다. 기출문제에서 자주 나오는 함정 문제입니다."
+            },
+            {
+                question: "여러 프로세스가 공유하는 자원에 대한 접근을 통제하기 위해 사용하는 커널의 동기화 메서드로 연산 기능이 있는 것은?",
+                options: ["세마포어", "뮤텍스", "조건변수", "플래그"],
+                correct: 0,
+                explanation: "세마포어는 P, V 연산 기능을 가지고 있어서 공유 자원에 대한 접근을 제어할 수 있습니다."
+            },
+            {
+                question: "물리적으로 연속된 메모리를 할당하는 함수는?",
+                options: ["vmalloc()", "kmalloc()", "calloc()", "mmap()"],
+                correct: 1,
+                explanation: "kmalloc()은 물리적으로 연속된 메모리를 할당하며 DMA 전송이 가능합니다."
+            },
+            
+            // 커널/시스템 관련 기출문제들
+            {
+                question: "리눅스 커널 소스 중 플랫폼에 의존적인 코드를 모아놓은 디렉토리는?",
+                options: ["fs", "lib", "arch", "mm"],
+                correct: 2,
+                explanation: "arch/ 디렉토리는 플랫폼(아키텍처)에 의존적인 코드들이 모여있는 곳입니다."
+            },
+            {
+                question: "리눅스의 init 프로세서가 runlevel 설정 중 단일 사용자 모드이면서 single 모드로 쉘에 바로 부팅되는 runlevel은?",
+                options: ["1", "2", "3", "5"],
+                correct: 0,
+                explanation: "runlevel 1은 단일 사용자 모드(single user mode)로 복구 작업 등에 사용됩니다."
+            },
+            {
+                question: "기억장치의 접근속도가 0.5us이고, 데이터 워드가 32비트일 때 대역폭은?",
+                options: ["8Mbps", "16Mbps", "32Mbps", "64Mbps"],
+                correct: 3,
+                explanation: "대역폭 = (32비트 / 0.5us) = 64Mbps 입니다."
+            },
+            {
+                question: "커널 모듈을 적재하는 명령어는?",
+                options: ["rmmod", "lsmod", "insmod", "mknod"],
+                correct: 2,
+                explanation: "insmod는 커널 모듈을 이미 동작 중인 커널에 적재하는 명령어입니다."
+            },
+            
+            // 네트워크 관련 기출문제들
+            {
+                question: "DHCP에서 MAC 주소를 이용해 서버나 호스트의 위치를 알아낼 때 사용하는 프로토콜은?",
+                options: ["ARP", "TCP", "IGRP", "ICP"],
+                correct: 0,
+                explanation: "ARP(Address Resolution Protocol)는 IP 주소를 MAC 주소로 변환하는 프로토콜입니다."
+            },
+            {
+                question: "TCP 서버 프로그램을 작성하려고 한다. 네트워크 관련 함수의 호출 순서로 맞는 것은?",
+                options: ["socket() → bind() → listen() → accept()", "socket() → accept() → bind() → connect()", "socket() → listen() → bind() → connect()", "socket() → listen() → accept() → bind()"],
+                correct: 0,
+                explanation: "TCP 서버는 socket() → bind() → listen() → accept() 순서로 함수를 호출합니다."
+            },
+            {
+                question: "UDP 헤더에 들어가는 내용이 아닌 것은?",
+                options: ["출발지 포트번호", "목적지 포트번호", "체크섬", "플래그 비트"],
+                correct: 3,
+                explanation: "UDP 헤더에는 플래그 비트가 없습니다. 플래그 비트는 TCP 헤더에 있습니다."
+            },
+            
+            // 추가 고급 문제들
+            {
+                question: "pthread API에 대한 설명으로 틀린 것은?",
+                options: ["pthread_create - 스레드를 생성한다.", "pthread_detach - 스레드를 종료한다.", "pthread_join - 스레드를 프로세스에 병합한다.", "pthread_cancel - 스레드를 취소한다."],
+                correct: 1,
+                explanation: "pthread_detach는 스레드를 분리하는 함수이지, 종료하는 함수가 아닙니다."
+            },
+            {
+                question: "교착상태 예방에 대한 내용은 어떤 조건을 방지하기 위한 것인가? '각 프로세스는 자신이 사용할 모든 자원을 한순간에 요청한다.'",
+                options: ["비선점", "점유대기", "상호배제", "환형대기"],
+                correct: 1,
+                explanation: "모든 자원을 한번에 요청하는 것은 점유대기(Hold and Wait) 조건을 방지하기 위함입니다."
+            },
+            {
+                question: "리눅스에서 파일 및 디렉토리가 소속된 그룹을 변경하기 위해 사용하는 명령어는?",
+                options: ["update", "chmod", "mask", "chgrp"],
+                correct: 3,
+                explanation: "chgrp 명령어는 파일이나 디렉토리의 그룹 소유권을 변경하는 데 사용됩니다."
+            },
+            {
+                question: "고성능 I/O 멀티플렉싱을 위한 함수로 리눅스 2.6부터 지원되는 것은?",
+                options: ["select()", "epoll()", "poll()", "fcntl()"],
+                correct: 1,
+                explanation: "epoll()은 리눅스 2.6부터 지원되는 고성능 I/O 멀티플렉싱 함수입니다."
+            }
+        ];
+        
+        // 시그널 데이터
+        const signalData = [
+            { name: 'SIGHUP', number: 1, description: '터미널 연결 끊김' },
+            { name: 'SIGINT', number: 2, description: 'Ctrl+C 인터럽트' },
+            { name: 'SIGQUIT', number: 3, description: 'Ctrl+\\ 종료' },
+            { name: 'SIGFPE', number: 8, description: '부동소수점 예외' },
+            { name: 'SIGKILL', number: 9, description: '강제 종료' },
+            { name: 'SIGUSR1', number: 10, description: '사용자 정의 1' },
+            { name: 'SIGSEGV', number: 11, description: '세그멘테이션 위반' },
+            { name: 'SIGUSR2', number: 12, description: '사용자 정의 2' },
+            { name: 'SIGPIPE', number: 13, description: '파이프 오류' },
+            { name: 'SIGTERM', number: 15, description: '정상 종료 요청' },
+            { name: 'SIGCHLD', number: 17, description: '자식 프로세스 변화' },
+            { name: 'SIGSTOP', number: 19, description: '프로세스 정지' },
+            { name: 'SIGTSTP', number: 20, description: 'Ctrl+Z 일시정지' }
+        ];
+        
+        // 전역 변수들
+        let currentCardIndex = 0;
+        let currentQuizIndex = 0;
+        let currentSignalIndex = 0;
+        let currentMode = 'study';
+        let currentCategory = 'all';
+        let filteredData = [...studyData];
+        let isCardFlipped = false;
+        let quizAnswered = false;
+        let correctAnswers = 0;
+        let studiedCards = new Set();
+        let signalMode = 'nameToNumber'; // 'nameToNumber' 또는 'numberToName'
+        let signalStreak = 0;
+        let totalSignalScore = 0;
+        let selectedSignalNumber = null;
+        
+        // 모드 전환
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 모든 모드 숨기기
+            document.getElementById('studyMode').style.display = 'none';
+            document.getElementById('quizMode').style.display = 'none';
+            document.getElementById('signalMode').style.display = 'none';
+            
+            if (mode === 'study') {
+                document.getElementById('studyMode').style.display = 'flex';
+                showCard();
+            } else if (mode === 'quiz') {
+                document.getElementById('quizMode').style.display = 'block';
+                currentQuizIndex = 0;
+                correctAnswers = 0;
+                showQuiz();
+            } else if (mode === 'signal') {
+                document.getElementById('signalMode').style.display = 'block';
+                initSignalGame();
+                showSignal();
+            }
+        }
+        
+        // 카테고리 필터링
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            if (category === 'all') {
+                filteredData = [...studyData];
+            } else {
+                filteredData = studyData.filter(item => item.category === category);
+            }
+            
+            currentCardIndex = 0;
+            showCard();
+            updateStats();
+        }
+        
+        // 카드 표시
+        function showCard() {
+            if (filteredData.length === 0) return;
+            
+            const card = filteredData[currentCardIndex];
+            document.getElementById('cardCategory').textContent = getCategoryName(card.category);
+            document.getElementById('cardTitle').textContent = card.title;
+            document.getElementById('cardDescription').textContent = card.description;
+            
+            // 카드 뒤집기 상태 초기화
+            document.querySelector('.card').classList.remove('flipped');
+            isCardFlipped = false;
+        }
+        
+        // 카테고리 이름 변환
+        function getCategoryName(category) {
+            const names = {
+                'memory': '메모리 관리',
+                'process': '프로세스/스레드',
+                'driver': '디바이스 드라이버',
+                'module': '커널 모듈',
+                'io': '파일/I/O',
+                'ipc': '공유 메모리',
+                'signal': '시그널'
+            };
+            return names[category] || category;
+        }
+        
+        // 카드 뒤집기
+        function flipCard() {
+            const card = document.querySelector('.card');
+            card.classList.toggle('flipped');
+            isCardFlipped = !isCardFlipped;
+            
+            if (isCardFlipped) {
+                studiedCards.add(currentCardIndex);
+                updateStats();
+            }
+        }
+        
+        // 다음 카드
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % filteredData.length;
+            showCard();
+        }
+        
+        // 이전 카드
+        function previousCard() {
+            currentCardIndex = currentCardIndex === 0 ? filteredData.length - 1 : currentCardIndex - 1;
+            showCard();
+        }
+        
+        // 카드 셔플
+        function shuffleCards() {
+            for (let i = filteredData.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [filteredData[i], filteredData[j]] = [filteredData[j], filteredData[i]];
+            }
+            currentCardIndex = 0;
+            showCard();
+        }
+        
+        // 퀴즈 표시
+        function showQuiz() {
+            if (currentQuizIndex >= quizData.length) {
+                showQuizResult();
+                return;
+            }
+            
+            const quiz = quizData[currentQuizIndex];
+            document.getElementById('quizQuestion').textContent = quiz.question;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            quiz.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('quizProgress').textContent = `${currentQuizIndex + 1} / ${quizData.length}`;
+            document.getElementById('progressBar').style.width = `${((currentQuizIndex + 1) / quizData.length) * 100}%`;
+            
+            quizAnswered = false;
+        }
+        
+        // 퀴즈 옵션 선택
+        function selectOption(selectedIndex) {
+            if (quizAnswered) return;
+            
+            const quiz = quizData[currentQuizIndex];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((option, index) => {
+                if (index === quiz.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedIndex && index !== quiz.correct) {
+                    option.classList.add('wrong');
+                }
+            });
+            
+            if (selectedIndex === quiz.correct) {
+                correctAnswers++;
+            }
+            
+            quizAnswered = true;
+            updateStats();
+            
+            // 설명 표시
+            setTimeout(() => {
+                alert(quiz.explanation);
+            }, 500);
+        }
+        
+        // 다음 퀴즈
+        function nextQuiz() {
+            if (!quizAnswered) {
+                alert('먼저 답을 선택해주세요!');
+                return;
+            }
+            
+            currentQuizIndex++;
+            showQuiz();
+        }
+        
+        // 이전 퀴즈
+        function previousQuiz() {
+            if (currentQuizIndex > 0) {
+                currentQuizIndex--;
+                showQuiz();
+            }
+        }
+        
+        // 퀴즈 결과 표시
+        function showQuizResult() {
+            const percentage = Math.round((correctAnswers / quizData.length) * 100);
+            alert(`퀴즈 완료!\n정답: ${correctAnswers}/${quizData.length}\n정답률: ${percentage}%`);
+            
+            // 처음으로 돌아가기
+            currentQuizIndex = 0;
+            correctAnswers = 0;
+            showQuiz();
+        }
+        
+        // 시그널 게임 초기화
+        function initSignalGame() {
+            const numberInput = document.getElementById('numberInput');
+            numberInput.innerHTML = '';
+            
+            // 자주 나오는 시그널 번호들만 버튼으로 만들기
+            const commonNumbers = [1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 15, 17, 19, 20];
+            
+            commonNumbers.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = 'number-btn';
+                btn.textContent = num;
+                btn.onclick = () => selectSignalNumber(num);
+                numberInput.appendChild(btn);
+            });
+        }
+        
+        // 시그널 번호 선택
+        function selectSignalNumber(number) {
+            // 이전 선택 제거
+            document.querySelectorAll('.number-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // 현재 선택 표시
+            event.target.classList.add('selected');
+            selectedSignalNumber = number;
+            
+            // 답 체크
+            checkSignalAnswer();
+        }
+        
+        // 시그널 답 체크
+        function checkSignalAnswer() {
+            if (selectedSignalNumber === null) return;
+            
+            const currentSignal = signalData[currentSignalIndex];
+            const resultDiv = document.getElementById('signalResult');
+            const isCorrect = selectedSignalNumber === currentSignal.number;
+            
+            if (isCorrect) {
+                signalStreak++;
+                totalSignalScore += signalStreak; // 연속 정답시 더 많은 점수
+                resultDiv.className = 'signal-result result-correct';
+                resultDiv.textContent = `정답! ${currentSignal.name} = ${currentSignal.number}번 (${currentSignal.description})`;
+            } else {
+                signalStreak = 0;
+                resultDiv.className = 'signal-result result-wrong';
+                resultDiv.textContent = `틀렸습니다! ${currentSignal.name} = ${currentSignal.number}번 (${currentSignal.description})`;
+            }
+            
+            resultDiv.style.display = 'block';
+            updateSignalStats();
+            
+            // 2초 후 자동으로 다음 문제
+            setTimeout(() => {
+                nextSignal();
+            }, 2000);
+        }
+        
+        // 다음 시그널
+        function nextSignal() {
+            currentSignalIndex = (currentSignalIndex + 1) % signalData.length;
+            selectedSignalNumber = null;
+            
+            // 버튼 선택 상태 초기화
+            document.querySelectorAll('.number-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // 결과 숨기기
+            document.getElementById('signalResult').style.display = 'none';
+            
+            showSignal();
+        }
+        
+        // 시그널 표시
+        function showSignal() {
+            const currentSignal = signalData[currentSignalIndex];
+            
+            if (signalMode === 'nameToNumber') {
+                document.getElementById('signalDisplay').textContent = currentSignal.name;
+            } else {
+                document.getElementById('signalDisplay').textContent = `${currentSignal.number}번`;
+            }
+        }
+        
+        // 시그널 모드 토글
+        function toggleSignalMode() {
+            signalMode = signalMode === 'nameToNumber' ? 'numberToName' : 'nameToNumber';
+            
+            if (signalMode === 'numberToName') {
+                alert('모드가 변경되었습니다!\n이제 번호를 보고 시그널 이름을 맞춰보세요!');
+                // TODO: 번호 → 이름 모드 구현 (더 복잡하므로 일단 기본 모드만)
+                signalMode = 'nameToNumber';
+                alert('죄송합니다. 아직 해당 모드는 준비중입니다!');
+            }
+            
+            showSignal();
+        }
+        
+        // 시그널 통계 업데이트
+        function updateSignalStats() {
+            document.getElementById('streakCount').textContent = signalStreak;
+            document.getElementById('totalSignalScore').textContent = totalSignalScore;
+            document.getElementById('signalScore').textContent = totalSignalScore;
+        }
+        
+        // 즐겨찾기
+        function markFavorite() {
+            if (currentMode !== 'study') {
+                alert('카드 학습 모드에서만 사용 가능합니다!');
+                return;
+            }
+            
+            const currentCard = filteredData[currentCardIndex];
+            let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            
+            if (favorites.includes(currentCard.title)) {
+                favorites = favorites.filter(title => title !== currentCard.title);
+                alert('즐겨찾기에서 제거되었습니다!');
+            } else {
+                favorites.push(currentCard.title);
+                alert('즐겨찾기에 추가되었습니다!');
+            }
+            
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+        }
+        
+        // 진행률 업데이트
+        function updateStats() {
+            document.getElementById('totalCards').textContent = filteredData.length;
+            document.getElementById('studiedCards').textContent = studiedCards.size;
+            
+            const rate = filteredData.length > 0 ? Math.round((studiedCards.size / filteredData.length) * 100) : 0;
+            const quizRate = quizData.length > 0 ? Math.round((correctAnswers / quizData.length) * 100) : 0;
+            
+            document.getElementById('correctRate').textContent = currentMode === 'quiz' ? `${quizRate}%` : `${rate}%`;
+        }
+        
+        // 진행률 리셋
+        function resetProgress() {
+            if (confirm('모든 학습 진행률을 리셋하시겠습니까?')) {
+                studiedCards.clear();
+                signalStreak = 0;
+                totalSignalScore = 0;
+                correctAnswers = 0;
+                updateStats();
+                updateSignalStats();
+                alert('진행률이 리셋되었습니다!');
+            }
+        }
+        
+        // 키보드 이벤트
+        document.addEventListener('keydown', function(event) {
+            if (currentMode === 'study') {
+                switch(event.key) {
+                    case 'ArrowLeft':
+                        previousCard();
+                        break;
+                    case 'ArrowRight':
+                        nextCard();
+                        break;
+                    case ' ':
+                        event.preventDefault();
+                        flipCard();
+                        break;
+                }
+            }
+        });
+        
+        // 초기화
+        showCard();
+        updateStats();
+        updateSignalStats();
+    </script>
+</body>
+</html>
